@@ -1,114 +1,176 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Rocket, FolderKanban, Users, Layers } from "lucide-react";
-import { motion } from "framer-motion";
-import StatsCard from "./StatsCard";
-import logo from "../assets/ritual-logo.jpg";
+import {
+  ArrowRight,
+  Sparkles,
+  Bot,
+  Boxes,
+  Cpu,
+  ChevronDown,
+} from "lucide-react";
 
 export default function Hero() {
+  const stats = [
+    {
+      icon: Boxes,
+      value: "150+",
+      label: "Projects",
+    },
+    {
+      icon: Bot,
+      value: "300+",
+      label: "AI Agents",
+    },
+    {
+      icon: Cpu,
+      value: "24/7",
+      label: "Community",
+    },
+  ];
+
   return (
-    <section className="relative overflow-hidden bg-zinc-950 py-24">
+    <section className="relative overflow-hidden">
 
-      {/* Background Glow */}
-      <div className="absolute inset-0 -z-10">
+      {/* Background */}
 
-        <div className="absolute left-1/2 top-10 h-[650px] w-[650px] -translate-x-1/2 rounded-full bg-green-500/10 blur-[150px]" />
+      <div className="absolute inset-0">
 
-        <div className="absolute -left-32 bottom-0 h-80 w-80 rounded-full bg-green-500/5 blur-[120px]" />
+        <div className="absolute inset-0 bg-[#09090B]" />
 
-        <div className="absolute -right-24 top-40 h-72 w-72 rounded-full bg-emerald-500/10 blur-[120px]" />
+        <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-emerald-500/20 blur-[140px]" />
+
+        <div className="absolute right-0 top-32 h-[300px] w-[300px] rounded-full bg-cyan-500/10 blur-[120px]" />
+
+        <div className="absolute left-0 bottom-0 h-[300px] w-[300px] rounded-full bg-purple-500/10 blur-[120px]" />
 
       </div>
 
-      <div className="mx-auto max-w-7xl px-6">
+      {/* Grid */}
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
+      <div
+        className="absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage:
+            "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg,#fff 1px,transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
 
-          <img
-            src={logo}
-            alt="Ritual"
-            className="mx-auto h-24 w-24 rounded-3xl shadow-2xl shadow-green-500/30"
-          />
+      <div className="relative mx-auto max-w-7xl px-6">
 
-          <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-5 py-2 text-green-400">
+        <div className="flex min-h-[85vh] flex-col items-center justify-center text-center">
 
-            <Rocket size={18} />
+          {/* Badge */}
 
-            Built on Ritual
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-5 py-2 text-sm text-emerald-400">
+
+            <Sparkles size={16} />
+
+            Ritual Ecosystem Directory
 
           </div>
 
-          <h1 className="mt-8 text-5xl font-black leading-tight text-white md:text-7xl">
+          {/* Heading */}
 
-            Discover
+          <h1 className="max-w-5xl text-5xl font-black leading-tight tracking-tight text-white md:text-7xl xl:text-8xl">
 
-            <span className="block text-green-400">
+            Discover the
 
-              185+ dApps
+            <span className="block bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
+
+              Future of AI
 
             </span>
 
-            Built on Ritual
+            on Ritual
 
           </h1>
 
-          <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-zinc-400 md:text-xl">
+          {/* Description */}
 
-            Explore AI Agents, Infrastructure, Wallets, DeFi,
-            Gaming and Developer Tools built by the Ritual community.
+          <p className="mt-8 max-w-3xl text-lg leading-8 text-zinc-400 md:text-xl">
+
+            Explore innovative AI agents, decentralized applications,
+            developer tools, and infrastructure powering the Ritual ecosystem.
 
           </p>
 
-          <div className="mt-12 flex flex-col justify-center gap-5 sm:flex-row">
+          {/* Buttons */}
 
-            <a
-              href="#projects"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-green-500 px-8 py-4 font-bold text-black transition hover:scale-105 hover:bg-green-400"
-            >
-              Explore dApps
-              <ArrowRight size={18} />
-            </a>
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-5">
 
             <Link
               to="/submit"
-              className="rounded-2xl border border-zinc-700 px-8 py-4 font-bold text-white transition hover:border-green-500 hover:text-green-400"
+              className="rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-8 py-4 font-semibold text-black transition duration-300 hover:scale-105"
             >
-              Submit dApp
+              Submit Project
             </Link>
+
+            <a
+              href="#projects"
+              className="flex items-center gap-2 rounded-2xl border border-zinc-700 bg-zinc-900 px-8 py-4 text-white transition hover:border-emerald-500 hover:bg-zinc-800"
+            >
+              Browse Projects
+
+              <ArrowRight size={18} />
+
+            </a>
 
           </div>
 
-        </motion.div>
+          {/* Stats */}
 
-        <div className="mt-20 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-20 grid w-full gap-6 md:grid-cols-3">
 
-          <StatsCard
-            icon={<FolderKanban size={30} />}
-            value="185+"
-            label="Ritual dApps"
-          />
+            {stats.map((item) => {
 
-          <StatsCard
-            icon={<Layers size={30} />}
-            value="20+"
-            label="Categories"
-          />
+              const Icon = item.icon;
 
-          <StatsCard
-            icon={<Users size={30} />}
-            value="Growing"
-            label="Builder Community"
-          />
+              return (
 
-          <StatsCard
-            icon={<Rocket size={30} />}
-            value="Open"
-            label="Community Driven"
-          />
+                <div
+                  key={item.label}
+                  className="rounded-3xl border border-zinc-800 bg-zinc-900/70 p-8 backdrop-blur-xl transition duration-300 hover:-translate-y-2 hover:border-emerald-500"
+                >
+
+                  <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10">
+
+                    <Icon
+                      size={28}
+                      className="text-emerald-400"
+                    />
+
+                  </div>
+
+                  <h2 className="text-4xl font-bold text-white">
+
+                    {item.value}
+
+                  </h2>
+
+                  <p className="mt-3 text-zinc-500">
+
+                    {item.label}
+
+                  </p>
+
+                </div>
+
+              );
+
+            })}
+
+          </div>
+
+          {/* Scroll */}
+
+          <div className="mt-20 animate-bounce">
+
+            <ChevronDown
+              size={34}
+              className="text-zinc-500"
+            />
+
+          </div>
 
         </div>
 

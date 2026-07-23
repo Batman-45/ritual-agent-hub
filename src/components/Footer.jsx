@@ -1,80 +1,149 @@
-import logo from "../assets/ritual-logo.jpg";
-
+import {
+  Globe,
+  Heart,
+  Sparkles,
+  GitBranch,
+  MessageCircle,
+} from "lucide-react";
 export default function Footer() {
-  return (
-    <footer className="border-t border-zinc-800 bg-zinc-950 mt-20">
-      <div className="max-w-7xl mx-auto px-6 py-12">
+  const year = new Date().getFullYear();
 
-        <div className="flex flex-col md:flex-row justify-between gap-10">
+  return (
+    <footer className="mt-24 border-t border-zinc-800 bg-[#09090B]">
+      <div className="mx-auto max-w-7xl px-6 py-16">
+
+        <div className="grid gap-12 md:grid-cols-4">
+
+          {/* Brand */}
 
           <div>
 
-            <div className="flex items-center gap-3">
+            <div className="mb-5 flex items-center gap-3">
 
-              <img
-                src={logo}
-                alt="Ritual"
-                className="w-12 h-12 rounded-xl"
-              />
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-400">
+
+                <Sparkles
+                  className="text-black"
+                  size={22}
+                />
+
+              </div>
 
               <div>
 
-                <h2 className="text-xl font-bold">
-                  Ritual Hub
+                <h2 className="text-xl font-bold text-white">
+                  Ritual Directory
                 </h2>
 
-                <p className="text-zinc-400">
-                  Discover the Ritual ecosystem.
+                <p className="text-sm text-zinc-500">
+                  Discover AI Projects
                 </p>
 
               </div>
 
             </div>
 
+            <p className="max-w-sm leading-7 text-zinc-400">
+              Explore the growing Ritual ecosystem.
+              Find AI projects, autonomous agents,
+              infrastructure and developer tools.
+            </p>
+
           </div>
+
+          {/* Navigation */}
 
           <div>
 
-            <h3 className="font-semibold mb-4">
-              Resources
+            <h3 className="mb-5 font-semibold text-white">
+              Explore
             </h3>
 
-            <div className="space-y-2">
+            <ul className="space-y-3 text-zinc-400">
+
+              <li>
+                <a href="#projects" className="hover:text-white">
+                  Projects
+                </a>
+              </li>
+
+              <li>
+                <a href="#agents" className="hover:text-white">
+                  Agents
+                </a>
+              </li>
+
+              <li>
+                <a href="/" className="hover:text-white">
+                  Categories
+                </a>
+              </li>
+
+            </ul>
+
+          </div>
+
+          {/* Developers */}
+
+          <div>
+
+            <h3 className="mb-5 font-semibold text-white">
+              Developers
+            </h3>
+
+            <ul className="space-y-3 text-zinc-400">
+
+              <li>
+                <a href="/" className="hover:text-white">
+                  Documentation
+                </a>
+              </li>
+
+              <li>
+                <a href="/" className="hover:text-white">
+                  API
+                </a>
+              </li>
+
+              <li>
+                <a href="/" className="hover:text-white">
+                  Submit Project
+                </a>
+              </li>
+
+            </ul>
+
+          </div>
+
+          {/* Social */}
+
+          <div>
+
+            <h3 className="mb-5 font-semibold text-white">
+              Community
+            </h3>
+
+            <div className="flex gap-4">
 
               <a
-                href="https://ritual.foundation"
-                target="_blank"
-                rel="noreferrer"
-                className="block text-zinc-400 hover:text-green-400"
+                href="/"
+                className="rounded-xl border border-zinc-800 bg-zinc-900 p-3 transition hover:border-emerald-500"
               >
-                Ritual Foundation
+                <MessageCircle size={18} />
               </a>
 
               <a
-                href="https://docs.ritual.foundation"
-                target="_blank"
-                rel="noreferrer"
-                className="block text-zinc-400 hover:text-green-400"
+                href="/"
+                className="rounded-xl border border-zinc-800 bg-zinc-900 p-3 transition hover:border-emerald-500"
               >
-                Documentation
+                <GitBranch size={18} />
               </a>
 
               <a
-                href="https://discord.gg/ritual"
-                target="_blank"
-                rel="noreferrer"
-                className="block text-zinc-400 hover:text-green-400"
+                href="/"
+                className="rounded-xl border border-zinc-800 bg-zinc-900 p-3 transition hover:border-emerald-500"
               >
-                Discord
-              </a>
-
-              <a
-                href="https://x.com/ritualnet"
-                target="_blank"
-                rel="noreferrer"
-                className="block text-zinc-400 hover:text-green-400"
-              >
-                X (Twitter)
+                <Globe size={18} />
               </a>
 
             </div>
@@ -83,9 +152,25 @@ export default function Footer() {
 
         </div>
 
-        <div className="border-t border-zinc-800 mt-10 pt-8 text-center text-zinc-500">
+        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-zinc-800 pt-8 md:flex-row">
 
-          Built with ❤️ for the Ritual community.
+          <p className="text-sm text-zinc-500">
+            © {year} Ritual Directory. All rights reserved.
+          </p>
+
+          <p className="flex items-center gap-2 text-sm text-zinc-500">
+
+            Built with
+
+            <Heart
+              size={16}
+              className="text-red-500"
+              fill="currentColor"
+            />
+
+            for the Ritual ecosystem
+
+          </p>
 
         </div>
 

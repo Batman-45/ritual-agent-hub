@@ -1,11 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../services/supabase";
+
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+
+import ProgressStepper from "../components/submit/ProgressStepper";
+import BasicInfoStep from "../components/submit/BasicInfoStep";
+import LinksStep from "../components/submit/LinksStep";
+import MediaStep from "../components/submit/MediaStep";
+import ReviewStep from "../components/submit/ReviewStep";
+
+import { supabase } from "../services/supabase";
 
 export default function SubmitAgent() {
   const navigate = useNavigate();
 
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const [logoFile, setLogoFile] = useState(null);
@@ -19,11 +29,12 @@ export default function SubmitAgent() {
     description: "",
     category: "",
     type: "dApp",
+    builder: "",
     website: "",
     github: "",
     documentation: "",
     twitter: "",
-    builder: "",
+    discord: "",
     tags: "",
   });
 
@@ -35,7 +46,7 @@ export default function SubmitAgent() {
   }
 
   function handleLogo(e) {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
 
     if (!file) return;
 
@@ -44,7 +55,7 @@ export default function SubmitAgent() {
   }
 
   function handleBanner(e) {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
 
     if (!file) return;
 
@@ -55,24 +66,22 @@ export default function SubmitAgent() {
   async function uploadImage(file) {
     if (!file) return "";
 
-    const fileName = `${Date.now()}-${file.name}`;
+    const filename = `${Date.now()}-${file.name}`;
 
     const { error } = await supabase.storage
       .from("project-images")
-      .upload(fileName, file);
+      .upload(filename, file);
 
     if (error) throw error;
 
     const { data } = supabase.storage
       .from("project-images")
-      .getPublicUrl(fileName);
+      .getPublicUrl(filename);
 
     return data.publicUrl;
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-
+  async function handleSubmit() {
     try {
       setLoading(true);
 
@@ -87,8 +96,8 @@ export default function SubmitAgent() {
             logo,
             image,
             status: "pending",
-            verified: false,
             featured: false,
+            verified: false,
           },
         ]);
 
@@ -104,227 +113,113 @@ export default function SubmitAgent() {
     }
   }
 
+  function nextStep() {
+    if (step < 4) {
+      setStep(step + 1);
+    }
+  }
+
+  function previousStep() {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-[#09090B] text-white">
+
       <Navbar />
 
-      <div className="max-w-3xl mx-auto px-6 py-16">
+      <main className="mx-auto max-w-5xl px-6 py-16">
 
-        <h1 className="text-5xl font-black mb-2">
-          Submit Project
-        </h1>
+        <div className="mb-10">
 
-        <p className="text-zinc-400 mb-10">
-          Submit your Ritual project for community review.
-        </p>
+          <h1 className="text-5xl font-black">
+            Submit Your Project
+          </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+          <p className="mt-3 text-zinc-400">
+            Showcase your project in the Ritual ecosystem directory.
+          </p>
 
-          <div>
-            <label className="block mb-2 font-semibold">
-              Project Name
-            </label>
+        </div>
 
-            <input
-              type="text"
-              name="name"
-              required
-              value={form.name}
-              onChange={handleChange}
-              className="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-4 py-3"
+        <ProgressStepper currentStep={step} />
+
+        <div className="rounded-[32px] border border-zinc-800 bg-zinc-900 p-8">
+
+          {step === 1 && (
+            <BasicInfoStep
+              form={form}
+              handleChange={handleChange}
             />
-          </div>
+          )}
 
-          <div>
-            <label className="block mb-2 font-semibold">
-              Description
-            </label>
-
-            <textarea
-              rows={5}
-              required
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              className="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-4 py-3"
+          {step === 2 && (
+            <LinksStep
+              form={form}
+              handleChange={handleChange}
             />
-          </div>
+          )}
 
-          <div className="grid md:grid-cols-2 gap-6">
+          {step === 3 && (
+            <MediaStep
+              logoPreview={logoPreview}
+              bannerPreview={bannerPreview}
+              handleLogo={handleLogo}
+              handleBanner={handleBanner}
+            />
+          )}
 
-            <div>
-              <label className="block mb-2 font-semibold">
-                Category
-              </label>
+          {step === 4 && (
+            <ReviewStep
+              form={form}
+              logoPreview={logoPreview}
+              bannerPreview={bannerPreview}
+            />
+          )}
+                    <div className="mt-12 flex flex-col gap-4 border-t border-zinc-800 pt-8 sm:flex-row sm:items-center sm:justify-between">
 
-              <input
-                type="text"
-                name="category"
-                value={form.category}
-                onChange={handleChange}
-                className="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-4 py-3"
-              />
+            <button
+              type="button"
+              onClick={previousStep}
+              disabled={step === 1}
+              className="rounded-2xl border border-zinc-700 px-6 py-3 font-semibold transition hover:border-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Previous
+            </button>
+
+            <div className="flex gap-4">
+
+              {step < 4 ? (
+                <button
+                  type="button"
+                  onClick={nextStep}
+                  className="rounded-2xl bg-emerald-500 px-8 py-3 font-semibold text-black transition hover:bg-emerald-400"
+                >
+                  Continue
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={loading}
+                  className="rounded-2xl bg-emerald-500 px-8 py-3 font-semibold text-black transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {loading ? "Submitting..." : "Submit Project"}
+                </button>
+              )}
+
             </div>
 
-            <div>
-              <label className="block mb-2 font-semibold">
-                Type
-              </label>
-
-              <select
-                name="type"
-                value={form.type}
-                onChange={handleChange}
-                className="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-4 py-3"
-              >
-                <option>dApp</option>
-                <option>AI Agent</option>
-                <option>Tool</option>
-                <option>SDK</option>
-                <option>Infrastructure</option>
-              </select>
-            </div>
-
           </div>
 
-          <div>
-            <label className="block mb-2 font-semibold">
-              Builder
-            </label>
+        </div>
 
-            <input
-              type="text"
-              name="builder"
-              value={form.builder}
-              onChange={handleChange}
-              className="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-4 py-3"
-            />
-          </div>
+      </main>
 
-          <div>
-            <label className="block mb-2 font-semibold">
-              Website
-            </label>
+      <Footer />
 
-            <input
-              type="url"
-              name="website"
-              value={form.website}
-              onChange={handleChange}
-              className="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 font-semibold">
-              GitHub
-            </label>
-
-            <input
-              type="url"
-              name="github"
-              value={form.github}
-              onChange={handleChange}
-              className="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 font-semibold">
-              Documentation
-            </label>
-
-            <input
-              type="url"
-              name="documentation"
-              value={form.documentation}
-              onChange={handleChange}
-              className="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 font-semibold">
-              Twitter / X
-            </label>
-
-            <input
-              type="url"
-              name="twitter"
-              value={form.twitter}
-              onChange={handleChange}
-              className="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 font-semibold">
-              Tags
-            </label>
-
-            <input
-              type="text"
-              name="tags"
-              value={form.tags}
-              onChange={handleChange}
-              placeholder="AI, ONNX, DeFi"
-              className="w-full rounded-xl bg-zinc-900 border border-zinc-700 px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 font-semibold">
-              Logo
-            </label>
-
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleLogo}
-              className="w-full"
-            />
-
-            {logoPreview && (
-              <img
-                src={logoPreview}
-                alt="Logo Preview"
-                className="mt-4 w-32 h-32 rounded-xl object-cover border border-zinc-700"
-              />
-            )}
-          </div>
-
-          <div>
-            <label className="block mb-2 font-semibold">
-              Banner Image
-            </label>
-
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleBanner}
-              className="w-full"
-            />
-
-            {bannerPreview && (
-              <img
-                src={bannerPreview}
-                alt="Banner Preview"
-                className="mt-4 rounded-xl border border-zinc-700"
-              />
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl bg-green-500 text-black py-4 font-bold hover:bg-green-400 disabled:opacity-50"
-          >
-            {loading ? "Uploading..." : "Submit Project"}
-          </button>
-
-        </form>
-
-      </div>
     </div>
   );
 }

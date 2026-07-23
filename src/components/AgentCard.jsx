@@ -1,87 +1,102 @@
+import { Link } from "react-router-dom";
+import {
+  Bot,
+  ArrowUpRight,
+  Cpu,
+  Brain,
+  Sparkles,
+} from "lucide-react";
+
 export default function AgentCard({ agent }) {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-violet-500 hover:shadow-xl hover:shadow-violet-500/10 transition-all duration-300">
+    <Link to={`/agent/${agent.id}`}>
+      <article className="group overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/80 backdrop-blur transition-all duration-300 hover:-translate-y-2 hover:border-emerald-500 hover:shadow-[0_0_40px_rgba(16,185,129,0.15)]">
 
-      {/* Project Image */}
-      {agent.image && (
-        <img
-          src={agent.image}
-          alt={agent.name}
-          className="w-full h-52 object-cover"
-        />
-      )}
+        {/* Header */}
+        <div className="relative flex h-44 items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-500/10 via-zinc-900 to-black">
 
-      <div className="p-6">
+          {agent.image ? (
+            <img
+              src={agent.image}
+              alt={agent.name}
+              className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+            />
+          ) : (
+            <Bot size={60} className="text-emerald-400" />
+          )}
 
-        {/* Project Name */}
-        <h2 className="text-2xl font-bold">
-          {agent.name}
-        </h2>
+          <div className="absolute right-4 top-4 rounded-full bg-black/50 p-2 backdrop-blur">
+            <Sparkles size={18} className="text-emerald-400" />
+          </div>
+        </div>
 
-        {/* Description */}
-        <p className="text-zinc-400 mt-3 line-clamp-3">
-          {agent.description}
-        </p>
+        {/* Content */}
+        <div className="space-y-5 p-6">
 
-        {/* Information */}
-        <div className="mt-5 space-y-2">
+          <div>
+            <h2 className="text-xl font-bold text-white transition group-hover:text-emerald-400">
+              {agent.name}
+            </h2>
 
-          <p>
-            <span className="font-semibold text-white">
-              Category:
-            </span>{" "}
-            {agent.category}
-          </p>
+            <p className="mt-3 line-clamp-3 text-sm leading-6 text-zinc-400">
+              {agent.description}
+            </p>
+          </div>
 
-          <p>
-            <span className="font-semibold text-white">
-              Type:
-            </span>{" "}
-            {agent.type}
-          </p>
+          <div className="flex flex-wrap gap-2">
+
+            {agent.category && (
+              <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs text-emerald-400">
+                {agent.category}
+              </span>
+            )}
+
+            {agent.model && (
+              <span className="rounded-full bg-zinc-800 px-3 py-1 text-xs text-zinc-300">
+                {agent.model}
+              </span>
+            )}
+
+            {agent.framework && (
+              <span className="rounded-full bg-zinc-800 px-3 py-1 text-xs text-zinc-300">
+                {agent.framework}
+              </span>
+            )}
+
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+
+            <div className="rounded-2xl bg-zinc-800/60 p-3">
+              <Cpu className="mb-2 text-emerald-400" size={18} />
+              <p className="text-xs text-zinc-500">Framework</p>
+              <p className="text-sm font-medium text-white">
+                {agent.framework || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-zinc-800/60 p-3">
+              <Brain className="mb-2 text-emerald-400" size={18} />
+              <p className="text-xs text-zinc-500">Model</p>
+              <p className="text-sm font-medium text-white">
+                {agent.model || "-"}
+              </p>
+            </div>
+
+          </div>
+
+          <div className="flex items-center justify-end border-t border-zinc-800 pt-5">
+
+            <span className="flex items-center gap-2 text-sm text-zinc-400 transition group-hover:text-white">
+              View Agent
+              <ArrowUpRight size={18} />
+            </span>
+
+          </div>
 
         </div>
 
-        {/* Buttons */}
-        <div className="flex flex-wrap gap-3 mt-6">
-
-          {agent.website && (
-            <a
-              href={agent.website}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg transition"
-            >
-              🌐 Website
-            </a>
-          )}
-
-          {agent.github && (
-            <a
-              href={agent.github}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-lg transition"
-            >
-              💻 GitHub
-            </a>
-          )}
-
-          {agent.twitter && (
-            <a
-              href={agent.twitter}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-sky-600 hover:bg-sky-700 px-4 py-2 rounded-lg transition"
-            >
-              🐦 Twitter
-            </a>
-          )}
-
-        </div>
-
-      </div>
-
-    </div>
+      </article>
+    </Link>
   );
 }

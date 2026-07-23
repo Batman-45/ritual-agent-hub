@@ -1,18 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "../services/supabase";
 
 import Navbar from "./Navbar";
 import Hero from "./Hero";
 import SearchBar from "./SearchBar";
+import Categories from "./Categories";
+import FeaturedProjects from "./FeaturedProjects";
+import TrendingSection from "./TrendingSection";
 import ProjectCard from "./ProjectCard";
-import LoadingCards from "./LoadingCards";
 import Footer from "./Footer";
+
+import { supabase } from "../services/supabase";
 
 export default function Home() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [category, setCategory] = useState("All");
 
   useEffect(() => {
     loadProjects();
@@ -24,187 +28,138 @@ export default function Home() {
     const { data, error } = await supabase
       .from("Projects")
       .select("*")
-      .eq("status", "approved")
       .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error(error);
-      setProjects([]);
-    } else {
+    if (!error) {
       setProjects(data || []);
     }
 
     setLoading(false);
   }
 
-  const categories = useMemo(() => {
-    return [
-      "All",
-      ...new Set(
-        projects
-          .map((p) => p.category)
-          .filter(Boolean)
-      ),
-    ];
-  }, [projects]);
-
-  const featuredProjects = projects.filter((p) => p.featured);
-
   const filteredProjects = useMemo(() => {
-    return projects.filter((project) => {
+    let list = [...projects];
+
+    if (search.trim()) {
       const q = search.toLowerCase();
 
-      const matchesSearch =
-        project.name?.toLowerCase().includes(q) ||
-        project.description?.toLowerCase().includes(q) ||
-        project.category?.toLowerCase().includes(q) ||
-        project.type?.toLowerCase().includes(q);
+      list = list.filter((project) => {
+        return (
+          project.name?.toLowerCase().includes(q) ||
+          project.description?.toLowerCase().includes(q) ||
+          project.category?.toLowerCase().includes(q)
+        );
+      });
+    }
 
-      const matchesCategory =
-        selectedCategory === "All" ||
-        project.category === selectedCategory;
+    if (category !== "All") {
+      list = list.filter(
+        (project) => project.category === category
+      );
+    }
 
-      return matchesSearch && matchesCategory;
-    });
-  }, [projects, search, selectedCategory]);
-
-  const totalProjects = projects.length;
-
-  const totalCategories = new Set(
-    projects
-      .map((p) => p.category)
-      .filter(Boolean)
-  ).size;
+    return list;
+  }, [projects, search, category]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-[#09090B] text-white">
+
       <Navbar />
 
       <Hero />
 
-      <div className="max-w-7xl mx-auto px-6">
+      <main className="mx-auto max-w-7xl px-6">
 
-        <SearchBar
-          value={search}
-          onChange={setSearch}
+        <div className="py-12">
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            category={category}
+            onCategoryChange={setCategory}
+          />
+        </div>
+
+        <Categories
+          selected={category}
+          onSelect={setCategory}
         />
 
-        <div className="flex flex-wrap gap-3 mb-10">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={
-                selectedCategory === category
-                  ? "px-5 py-2 rounded-full bg-green-500 text-black font-bold"
-                  : "px-5 py-2 rounded-full bg-zinc-900 border border-zinc-700 hover:border-green-500"
-              }
-            >
-              {category}
-            </button>
-          ))}
-        </div>
+        <FeaturedProjects
+          projects={projects}
+        />
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <TrendingSection
+          projects={projects}
+        />
 
-          <div className="rounded-2xl bg-zinc-900 border border-zinc-800 p-6">
-            <h2 className="text-4xl font-black text-green-400">
-              {totalProjects}
-            </h2>
-            <p className="mt-2 text-zinc-400">
-              Approved Projects
-            </p>
-          </div>
+        <section id="projects" className="my-20">
 
-          <div className="rounded-2xl bg-zinc-900 border border-zinc-800 p-6">
-            <h2 className="text-4xl font-black text-green-400">
-              {totalCategories}
-            </h2>
-            <p className="mt-2 text-zinc-400">
-              Categories
-            </p>
-          </div>
+          <div className="mb-10 flex items-center justify-between">
 
-          <div className="rounded-2xl bg-zinc-900 border border-zinc-800 p-6">
-            <h2 className="text-4xl font-black text-green-400">
-              {featuredProjects.length}
-            </h2>
-            <p className="mt-2 text-zinc-400">
-              Featured Projects
-            </p>
-          </div>
+            <div>
+              <h2 className="text-4xl font-bold">
+                Explore All Projects
+              </h2>
 
-          <div className="rounded-2xl bg-zinc-900 border border-zinc-800 p-6">
-            <h2 className="text-4xl font-black text-green-400">
-              100%
-            </h2>
-            <p className="mt-2 text-zinc-400">
-              Open Source
-            </p>
-          </div>
+              <p className="mt-3 text-zinc-400">
+                Browse every project in the Ritual ecosystem.
+              </p>
+            </div>
 
-        </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm">
+              {filteredProjects.length} Projects
+            </div>
 
-        <section id="projects" className="pb-20">
-
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-4xl font-bold">
-              Explore Projects
-            </h2>
-
-            <span className="text-zinc-500">
-              {filteredProjects.length} Project
-              {filteredProjects.length !== 1 ? "s" : ""}
-            </span>
           </div>
 
           {loading ? (
-            <LoadingCards />
+
+            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+
+              {[...Array(6)].map((_, index) => (
+                <div
+                  key={index}
+                  className="h-80 animate-pulse rounded-3xl bg-zinc-900"
+                />
+              ))}
+
+            </div>
+
           ) : filteredProjects.length === 0 ? (
-            <div className="border border-dashed border-zinc-700 rounded-2xl py-20 text-center">
-              <h3 className="text-2xl font-bold">
+
+            <div className="rounded-3xl border border-dashed border-zinc-700 py-24 text-center">
+
+              <h3 className="text-3xl font-bold">
                 No Projects Found
               </h3>
 
-              <p className="mt-3 text-zinc-500">
+              <p className="mt-4 text-zinc-500">
                 Try another search or category.
               </p>
+
             </div>
+
           ) : (
-            <>
-              {featuredProjects.length > 0 && (
-                <div className="mb-16">
-                  <h3 className="text-3xl font-bold mb-8">
-                    ⭐ Featured Projects
-                  </h3>
 
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {featuredProjects.map((project) => (
-                      <ProjectCard
-                        key={`featured-${project.id}`}
-                        project={project}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredProjects.map((project) => (
-                  <ProjectCard
-                    key={project.id}
-                    project={project}
-                  />
-                ))}
-              </div>
-            </>
+              {filteredProjects.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                />
+              ))}
+
+            </div>
+
           )}
 
         </section>
 
-      </div>
+      </main>
 
       <Footer />
+
     </div>
   );
 }
